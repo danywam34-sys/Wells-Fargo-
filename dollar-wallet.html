@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dollar Wallet</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17324d;background:#eef4fb}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#eef4fb}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:#fff;box-shadow:0 8px 30px #15365b18}
+header{background:#1459a8;color:#fff;padding:26px 22px 25px;border-radius:0 0 24px 24px}
+.brand{font-size:13px;letter-spacing:1.6px;font-weight:800}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.status{font-size:10px;background:#ffffff20;border:1px solid #ffffff70;padding:6px 9px;border-radius:99px;white-space:nowrap}
+h1{font-size:25px;margin:22px 0 5px}
+.subtitle{font-size:13px;opacity:.85}
+main{padding:20px}
+.card{border-radius:18px;padding:20px;background:#f0f6ff;border:1px solid #d9e8fb;margin-bottom:16px}
+.small{font-size:12px;color:#647b91}
+.balance{font-size:32px;font-weight:800;color:#124e91;margin:9px 0}
+.row{display:flex;gap:10px}
+button{border:0;border-radius:12px;background:#1768bb;color:white;font-weight:700;padding:14px 10px;flex:1;font-size:13px;cursor:pointer}
+button.secondary{background:#e5f0ff;color:#1459a8;border:1px solid #c7def8}
+button:active{transform:scale(.99)}
+.field{width:100%;padding:14px;border:1px solid #cad8e6;border-radius:11px;margin:7px 0 14px;font-size:16px}
+label{font-size:13px;font-weight:700;color:#38536b}
+.section-title{font-size:17px;margin:22px 0 12px}
+.item{display:flex;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid #edf1f5;font-size:13px}
+.amt{font-weight:700;color:#1459a8}
+.note{font-size:11px;line-height:1.5;color:#6b7e90;margin-top:18px}
+.hidden{display:none}
+footer{text-align:center;color:#7890a6;font-size:11px;padding:18px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="toprow"><div class="brand">DOLLAR WALLET</div><span class="status">SIMULATED ACCOUNT</span></div>
+  <h1>Welcome to your wallet</h1>
+  <div class="subtitle">A simple personal wallet interface</div>
+</header>
+<main>
+  <section id="login" class="card">
+    <h2 style="margin-top:0">Sign in</h2>
+    <p class="small">Enter the sample credentials to explore the interface.</p>
+    <label for="account">Account number</label>
+    <input id="account" class="field" inputmode="numeric" autocomplete="off" placeholder="Enter account number">
+    <label for="password">Password</label>
+    <input id="password" class="field" type="password" autocomplete="off" placeholder="Enter password">
+    <button id="loginBtn" style="width:100%">SIGN IN</button>
+    <p class="note">Sample login: account <b>1234567890</b> · password <b>Demo1234</b>. These are fictional credentials for this local simulation. Never enter real bank details.</p>
+  </section>
+  <section id="dashboard" class="hidden">
+    <div class="card">
+      <div class="small">SIMULATED USD BALANCE</div>
+      <div class="balance" id="balance">$30,000.00</div>
+      <div class="small">Account profile: Denise Milliken (sample profile)</div>
+    </div>
+    <div class="row">
+      <button id="depositBtn">Deposit</button>
+      <button id="withdrawBtn" class="secondary">Withdraw</button>
+    </div>
+    <div style="margin-top:10px"><button id="transferBtn" class="secondary" style="width:100%">Transfer</button></div>
+    <h2 class="section-title">Recent activity</h2>
+    <div id="history" class="card">
+      <div class="item"><span>Opening simulated balance</span><span class="amt">+$30,000.00</span></div>
+    </div>
+    <button id="logoutBtn" class="secondary" style="width:100%">Sign out</button>
+  </section>
+  <p class="note"><b>About this prototype:</b> This is a simulated wallet interface, not a bank account or financial service. Displayed funds and activity are fictional; no real money can be received, stored, or transferred.</p>
+</main>
+<footer>DOLLAR WALLET · WALLET INTERFACE PREVIEW</footer>
+</div>
+<script>
+let balance=30000;
+const fmt=n=>n.toLocaleString('en-US',{style:'currency',currency:'USD'});
+function update(){document.getElementById('balance').textContent=fmt(balance)}
+function entry(label,amount){const row=document.createElement('div');row.className='item';const a=document.createElement('span');a.textContent=label;const b=document.createElement('span');b.className='amt';b.textContent=(amount>=0?'+':'−')+fmt(Math.abs(amount));row.append(a,b);document.getElementById('history').prepend(row)}
+document.getElementById('loginBtn').onclick=()=>{
+ if(document.getElementById('account').value==='1234567890' && document.getElementById('password').value==='Demo1234'){
+ document.getElementById('login').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');
+ }else alert('Please use the sample login shown on this page.');
+};
+function change(kind,sign){const raw=prompt('Enter an amount in USD for this simulation:');if(raw===null)return;const amount=Number(raw);if(!Number.isFinite(amount)||amount<=0){alert('Enter a valid amount greater than zero.');return;}if(sign<0&&amount>balance){alert('Insufficient simulated balance.');return;}balance+=sign*amount;update();entry(kind,sign*amount);alert('Updated in the simulation only. No real money moved.');}
+document.getElementById('depositBtn').onclick=()=>change('Simulated deposit',1);
+document.getElementById('withdrawBtn').onclick=()=>change('Simulated withdrawal',-1);
+document.getElementById('transferBtn').onclick=()=>change('Simulated transfer',-1);
+document.getElementById('logoutBtn').onclick=()=>{document.getElementById('dashboard').classList.add('hidden');document.getElementById('login').classList.remove('hidden');document.getElementById('password').value='';};
+</script>
+</body>
+</html>
